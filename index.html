@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+ 
+    <title>認識APIの応用</title>
+    <style>
+      
+     body {
+        background-image: url("a.jpg");
+        background-size: cover;
+      }
+     body {
+        padding: 15px 5px;
+        text-align: center;
+      }
+      li {
+        list-style-type: none;
+      }
+      
+      #container {
+        font-family: "Yu Gothic", YuGothic, Verdana, 'Hiragino Kaku Gothic ProN','Hiragino Kaku Gothic Pro', 'ヒラギノ角ゴ Pro W3', 'メイリオ', Meiryo, sans-serif;
+         text-align: center;
+         padding-top: 40px;
+        }
+
+     .btn-animation-02 {
+        display: inline-block;
+        width: 200px;
+        text-align: center;
+        background-color: #f11469;
+        border: 3px solid #000000;
+        font-size: 20px;
+        color: #000000;
+        text-decoration: none;
+        font-weight: bold;
+        padding: 10px 24px;
+        border-radius: 4px;
+        position: relative;
+      }
+
+      .btn-animation-02 span {
+        position: relative;
+        z-index: 1;
+      }
+
+      .btn-animation-02::before,
+      .btn-animation-02::after {
+          content: "";
+          display: block;
+          background-color: rgb(59, 59, 59);
+          width: 50%;
+          height: 100%;
+          position: absolute;
+          top: 0;
+          transition: .2s;
+        }
+        .btn-animation-02::before {
+          left: 0;
+        }
+        .btn-animation-02::after {
+           right: 0;
+        }
+
+        .btn-animation-02:hover:before,
+        .btn-animation-02:hover:after {
+            width: 0;
+            background-color: rgb(245, 71, 172);
+          }
+
+        .btn-animation-02:hover {
+            color: rgb(255, 255, 255);
+        }
+
+</style>
+  </head>
+  <body>
+    <h3>音声メモ帳✍</h3>
+
+      <p>話した後に言葉を付け足したいときは文字を打ったり消したりすることができます。</p>
+      <p>下の合言葉を言ってみると、、、!?💓</p>
+  
+    <div class="container">
+      <button id="container" a href="#" class="btn-animation-02"><span>RECORDINGS🎙</span></a>
+      </div>
+
+    <p><strong>【ゲーム🎮】【ディズニー🏰】【アニメ🤞】【いちご🍓👑】</strong></p>
+    <div id="content"></div>
+
+    <script>
+      var btn = document.getElementById("container");
+      var content = document.getElementById("content");
+
+      //音声認識APIの使用
+      var speech = new webkitSpeechRecognition();
+
+      //言語を日本語に設定
+      speech.lang = "ja";
+
+      //ボタンクリックで認識開始
+      btn.addEventListener("click", function () {
+        speech.start();
+      });
+
+      //認識されたテキストを使って処理を分岐
+      speech.addEventListener("result", function (e) {
+        console.log(e);
+        var text = e.results[0][0].transcript;
+
+        switch (text) {
+          case "ゲーム":
+            getSearch();
+            break;
+          case "ディズニー":
+            getVideo();
+            break;
+          case "アニメ":
+            getRadio();
+            break;
+          case "いちご":
+            getEventData();
+            break;
+          default:
+            getTextContents(text);
+        }
+      });
+
+      //ゲーム
+      function getSearch() {
+        var iframe = document.createElement("iframe");
+
+        iframe.width = "745px";
+        iframe.height = "750px";
+        iframe.src = "https://0ud2c.csb.app/kao.html";
+        content.appendChild(iframe);
+      }
+
+      //ディズニー
+      function getVideo() {
+        var iframe = document.createElement("iframe");
+
+        iframe.width = "800px";
+        iframe.height = "650px";
+        iframe.src = "https://twisted-wonderland.aniplex.co.jp/";
+        content.appendChild(iframe);
+      }
+
+      //領域展開
+      function getRadio() {
+        var URL =
+          '<iframe width="560" height="315" src="https://www.youtube.com/embed/xLveUtkjixs" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+
+        content.innerHTML = URL;
+      }
+
+      //いちご
+      function getEventData() {
+        var URL =
+          '<iframe width="560" height="315" src="https://www.youtube.com/embed/neksnqxvdzM" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+
+        content.innerHTML = URL;
+      }
+
+      //テキスト表示
+      function getTextContents(text) {
+        content.innerHTML =
+          "<p>認識された言葉</p>" + '<input type="text" value="' + text + '">';
+      }
+
+      var msg = new SpeechSynthesisUtterance();
+
+      function speak(text) {
+        msg.volume = 1.0; // 音量 min 0 ~ max 1
+        msg.rate = 1.0; // 速度 min 0 ~ max 10
+        msg.pitch = 1.0; // 音程 min 0 ~ max 2
+
+        msg.text = text; // 喋る内容
+        msg.lang = "ja-JP"; // en-US or ja-JP
+        //msg.lang = "en-US"; // en-US or ja-JP
+
+        // 発話実行
+        speechSynthesis.speak(msg);
+      }
+
+      // 終了時の処理
+      msg.onend = function (event) {
+        console.log("喋った時間：" + event.elapsedTime + "ms");
+      };
+    </script>
+  </body>
+</html>
